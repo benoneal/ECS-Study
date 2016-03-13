@@ -8,6 +8,12 @@ The game is obviously very simple:
 * Collect the laser eyes powerup to allow you to clear paths when things get hairy
 * Moving to the right speeds things up and multiplies all points gained
 
+Controls: 
+```
+W|A|S|D & up|left|down|right = movement
+Space = fire lasers (when you have the pickup, which you'll know because you get a blue ammo bar below your health bar)
+```
+
 To run it, simply open index.html in your browser. 
 
 To mess around with it, run: 
