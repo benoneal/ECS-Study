@@ -1,0 +1,33 @@
+{
+  "name": "Daninator",
+  "version": "0.0.1",
+  "description": "ECS experiment",
+  "main": "build/daninator.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benoneal/ECS-Study.git"
+  },
+  "keywords": [
+    "ecs",
+    "game"
+  ],
+  "scripts": {
+    "compile": "browserify index.js -o build/daninator.js -t [ babelify --presets [ es2015 ] ]",
+    "dev": "watchify index.js -o build/daninator.js -t [ babelify --presets [ es2015 ] ] -v"
+  },
+  "author": "Ben O'Neal <ben@benoneal.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benoneal/ECS-Study/issues"
+  },
+  "homepage": "https://github.com/benoneal/ECS-Study",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.6.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "lodash": "^4.6.1"
+  }
+}
