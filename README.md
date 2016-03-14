@@ -10,8 +10,9 @@ The game is obviously very simple:
 
 Controls: 
 ```
-W|A|S|D & up|left|down|right = movement
-Space = fire lasers (when you have the pickup, which you'll know because you get a blue ammo bar below your health bar)
+W|A|S|D or up|left|down|right = movement
+Space = fire lasers (when you have the pickup and have a blue ammo bar below your health)
+P = pause (any key will un-pause)
 ```
 
 To run it, simply open index.html in your browser. 
