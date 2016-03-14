@@ -1,6 +1,7 @@
 'use strict'
 
 import forEach from 'lodash/forEach'
+import round from 'lodash/round'
 import filter from 'lodash/filter'
 import every from 'lodash/every'
 import random from 'lodash/random'
@@ -17,8 +18,10 @@ function Game() {
 
   const gameLoop = () => {
     forEach(ECS.systems, system => system(filteredEntities(system.requirements)))
-    if (random(100) <= this.speed) this.spawnWings()
+    if (random(200) <= this.speed) this.spawnWings()
     if (random(10000) <= this.speed) this.spawnLaserPickup()
+    this.speed += 0.01
+    this.difficulty += 0.01
     if (this._running) requestAnimationFrame(gameLoop)
   }
 
@@ -38,7 +41,7 @@ function Game() {
   this.spawnLaserPickup = () => ECS.addEntity(new ECS.assemblages.LaserPickup(defaultStartPos))
 
   this.updateScore = (delta = 1) => {
-    ECS.score += (delta * this.speed)
+    ECS.score += round(delta * (this.speed + this.difficulty))
   }
 
   this.startGame = () => {

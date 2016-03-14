@@ -4,7 +4,6 @@ import forEach from 'lodash/forEach'
 import find from 'lodash/find'
 import has from 'lodash/has'
 import clamp from 'lodash/clamp'
-import sfx from '../helpers/sfx'
 import ECS from '../ECS'
 
 function dimensions(entity) {
@@ -34,39 +33,44 @@ const Collision = entities => {
   }
   let player = findByComponent('playerControlled.isPlayer')
   let laser = findByComponent('laser')
+  let { appearance, position, soundEffect } = player.components
 
   forEach(entities, entity => {
     let { delicious, tooSpicy, spawn, playerControlled } = entity.components
+
+    // handle laser collisions
     if (!playerControlled && laser && laser.components.laser.firing && doesIntersect(laser, entity)) {
-      ECS.game.updateScore()
-      ECS.removeEntity(entity)
+      if (tooSpicy) ECS.game.updateScore(100)
+      if (!spawn) ECS.removeEntity(entity)
     }
 
+    // handle player collisions
     if (!playerControlled && doesIntersect(player, entity)) {
-      // add trigger for animations of player eating and wings being eaten
-      if (spawn) {
+      appearance.useAltImage = true
+      setTimeout(() => appearance.useAltImage = false, 200)
+      if (spawn) { // with pickups
+        soundEffect.effect = 'yeah'
+        soundEffect.action = 'fire'
         if (laser) {
           laser.components.laser.ammo += 60
           laser.components.laser.maxAmmo += 60
         } else {
-          ECS.addEntity(new spawn.entity(player.components.position))
+          ECS.addEntity(new spawn.entity(position))
         }
       }
 
-      if (tooSpicy) {
+      if (tooSpicy) { // with DeathWings
+        soundEffect.effect = 'oww'
+        soundEffect.action = 'fire'
         modHealth(player, -tooSpicy.damage)
         ECS.game.increaseDifficulty()
-
-        ECS.$canvas.className='badHit' // refactor out
-        setTimeout(() => ECS.$canvas.className='', 100)
         ECS.game.updateScore(-1)
       } 
-      if (delicious) {
-        sfx('nom')
-        modHealth(player, delicious.healing)
 
-        ECS.$canvas.className='goodHit' // refactor out
-        setTimeout(() => ECS.$canvas.className='', 100)
+      if (delicious) { // with BuffaloWings
+        soundEffect.effect = 'nom'
+        soundEffect.action = 'fire'
+        modHealth(player, delicious.healing)
         ECS.game.updateScore()
       }
 

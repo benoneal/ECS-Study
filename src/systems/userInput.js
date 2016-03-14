@@ -41,7 +41,7 @@ const UserInput = entities => {
   let velocity = (baseSpeed * (1 + ECS.game.speed / 50)) / 100
 
   forEach(entities, entity => {
-    let { laser, position } = entity.components
+    let { laser, position, soundEffect } = entity.components
     if (actions.moveUp === actions.moveDown) {
       actions.moveUp = false
       actions.moveDown = false
@@ -65,8 +65,11 @@ const UserInput = entities => {
     }
 
     if (laser) {
+      soundEffect.effect = actions.fireLaser && 'pew'
+      soundEffect.action = actions.fireLaser ? 'start' : 'stop'
+
       laser.firing = actions.fireLaser
-      actions.fireLaser && laser.ammo-- 
+      actions.fireLaser && laser.ammo--
       if (laser.ammo <= 0) ECS.removeEntity(entity)
     }
   })

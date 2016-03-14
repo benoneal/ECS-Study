@@ -10,6 +10,7 @@ import Delicious from './components/Delicious'
 import TooSpicy from './components/TooSpicy'
 import Laser from './components/Laser'
 import Spawn from './components/Spawn'
+import SoundEffect from './components/SoundEffect'
 
 export default {
   Appearance,
@@ -21,5 +22,6 @@ export default {
   Delicious,
   TooSpicy,
   Laser,
-  Spawn
+  Spawn,
+  SoundEffect
 }
