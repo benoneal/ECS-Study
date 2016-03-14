@@ -15,7 +15,8 @@ let controls = {
   '39': 'moveRight',
   '65': 'moveLeft',
   '37': 'moveLeft',
-  '32': 'fireLaser'
+  '32': 'fireLaser',
+  '80': 'pause'
 }
 
 let actions = {
@@ -23,11 +24,17 @@ let actions = {
   moveDown: false,
   moveLeft: false,
   moveRight: false,
-  fireLaser: false
+  fireLaser: false,
+  pause: false
 }
 
 const startAction = e => actions[controls[e.keyCode]] = true
 const stopAction = e => actions[controls[e.keyCode]] = false
+const handlePause = e => {
+  stopAction(e)
+  ECS.game.togglePause()
+  window.removeEventListener('keydown', handlePause)
+}
 
 const UserInput = entities => {
   if (!initialised) {
@@ -42,6 +49,11 @@ const UserInput = entities => {
 
   forEach(entities, entity => {
     let { laser, position, soundEffect } = entity.components
+    if (actions.pause) {
+      window.addEventListener('keydown', handlePause)
+      ECS.game.togglePause()
+    }
+
     if (actions.moveUp === actions.moveDown) {
       actions.moveUp = false
       actions.moveDown = false

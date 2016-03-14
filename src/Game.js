@@ -51,6 +51,11 @@ function Game() {
     requestAnimationFrame(gameLoop)
   }
 
+  this.togglePause = () => {
+    this._running = !this._running
+    this._running && requestAnimationFrame(gameLoop)
+  }
+
   this.endGame = () => { 
     this._running = false
     document.getElementById('final-score').innerHTML = ECS.score

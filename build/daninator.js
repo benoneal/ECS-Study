@@ -3802,6 +3802,11 @@ function Game() {
     requestAnimationFrame(gameLoop);
   };
 
+  this.togglePause = function () {
+    _this._running = !_this._running;
+    _this._running && requestAnimationFrame(gameLoop);
+  };
+
   this.endGame = function () {
     _this._running = false;
     document.getElementById('final-score').innerHTML = _ECS2.default.score;
@@ -4677,7 +4682,8 @@ var controls = {
   '39': 'moveRight',
   '65': 'moveLeft',
   '37': 'moveLeft',
-  '32': 'fireLaser'
+  '32': 'fireLaser',
+  '80': 'pause'
 };
 
 var actions = {
@@ -4685,7 +4691,8 @@ var actions = {
   moveDown: false,
   moveLeft: false,
   moveRight: false,
-  fireLaser: false
+  fireLaser: false,
+  pause: false
 };
 
 var startAction = function startAction(e) {
@@ -4693,6 +4700,11 @@ var startAction = function startAction(e) {
 };
 var stopAction = function stopAction(e) {
   return actions[controls[e.keyCode]] = false;
+};
+var handlePause = function handlePause(e) {
+  stopAction(e);
+  _ECS2.default.game.togglePause();
+  window.removeEventListener('keydown', handlePause);
 };
 
 var UserInput = function UserInput(entities) {
@@ -4715,6 +4727,11 @@ var UserInput = function UserInput(entities) {
     var laser = _entity$components.laser;
     var position = _entity$components.position;
     var soundEffect = _entity$components.soundEffect;
+
+    if (actions.pause) {
+      window.addEventListener('keydown', handlePause);
+      _ECS2.default.game.togglePause();
+    }
 
     if (actions.moveUp === actions.moveDown) {
       actions.moveUp = false;
