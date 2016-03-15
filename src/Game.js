@@ -46,9 +46,24 @@ function Game() {
 
   this.startGame = () => {
     this._running = true
-    ECS.addEntity(new Daninator({ x: 0.08, y: 0.5 }))
-    this.spawnWings()
+    if (window.location.hash.length) {
+      this.loadGame()
+    } else {
+      ECS.addEntity(new Daninator({ x: 0.08, y: 0.5 }))
+      this.spawnWings()
+    }
     requestAnimationFrame(gameLoop)
+  }
+
+  this.loadGame = () => {
+    let { entities, score } = JSON.parse(atob(window.location.hash.split('#')[1]))
+    ECS.entities = entities
+    ECS.score = score
+  }
+
+  this.saveGame = () => {
+    let data = { entities: ECS.entities, score: ECS.score }
+    window.location.hash = `#${btoa(JSON.stringify(data))}`
   }
 
   this.togglePause = () => {
@@ -56,7 +71,7 @@ function Game() {
     this._running && requestAnimationFrame(gameLoop)
   }
 
-  this.endGame = () => { 
+  this.endGame = () => {
     this._running = false
     document.getElementById('final-score').innerHTML = ECS.score
     document.getElementById('game-over').className = ''

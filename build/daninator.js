@@ -3797,9 +3797,28 @@ function Game() {
 
   this.startGame = function () {
     _this._running = true;
-    _ECS2.default.addEntity(new Daninator({ x: 0.08, y: 0.5 }));
-    _this.spawnWings();
+    if (window.location.hash.length) {
+      _this.loadGame();
+    } else {
+      _ECS2.default.addEntity(new Daninator({ x: 0.08, y: 0.5 }));
+      _this.spawnWings();
+    }
     requestAnimationFrame(gameLoop);
+  };
+
+  this.loadGame = function () {
+    var _JSON$parse = JSON.parse(atob(window.location.hash.split('#')[1]));
+
+    var entities = _JSON$parse.entities;
+    var score = _JSON$parse.score;
+
+    _ECS2.default.entities = entities;
+    _ECS2.default.score = score;
+  };
+
+  this.saveGame = function () {
+    var data = { entities: _ECS2.default.entities, score: _ECS2.default.score };
+    window.location.hash = '#' + btoa(JSON.stringify(data));
   };
 
   this.togglePause = function () {
@@ -4674,16 +4693,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var initialised = void 0;
 var baseSpeed = 1;
 var controls = {
-  '87': 'moveUp',
-  '38': 'moveUp',
-  '83': 'moveDown',
-  '40': 'moveDown',
-  '68': 'moveRight',
-  '39': 'moveRight',
-  '65': 'moveLeft',
-  '37': 'moveLeft',
-  '32': 'fireLaser',
-  '80': 'pause'
+  '87': 'moveUp', // w
+  '38': 'moveUp', // up
+  '83': 'moveDown', // s
+  '40': 'moveDown', // down
+  '68': 'moveRight', // d
+  '39': 'moveRight', // right
+  '65': 'moveLeft', // a
+  '37': 'moveLeft', // left
+  '32': 'fireLaser', // space
+  '80': 'pause', // p
+  '67': 'capture' // c
 };
 
 var actions = {
@@ -4692,7 +4712,8 @@ var actions = {
   moveLeft: false,
   moveRight: false,
   fireLaser: false,
-  pause: false
+  pause: false,
+  capture: false
 };
 
 var startAction = function startAction(e) {
@@ -4733,26 +4754,25 @@ var UserInput = function UserInput(entities) {
       _ECS2.default.game.togglePause();
     }
 
-    if (actions.moveUp === actions.moveDown) {
-      actions.moveUp = false;
-      actions.moveDown = false;
+    if (actions.capture) {
+      _ECS2.default.game.saveGame();
+      actions.capture = false;
     }
 
-    if (actions.moveUp) modY(entity, position.y - velocity);
-    if (actions.moveDown) modY(entity, position.y + velocity);
-
-    if (actions.moveLeft === actions.moveRight) {
-      actions.moveLeft = false;
-      actions.moveRight = false;
+    if (actions.moveUp !== actions.moveDown) {
+      if (actions.moveUp) modY(entity, position.y - velocity);
+      if (actions.moveDown) modY(entity, position.y + velocity);
     }
 
-    if (actions.moveLeft) {
-      modX(entity, position.x - velocity);
-      _ECS2.default.game.decreaseSpeed();
-    }
-    if (actions.moveRight) {
-      modX(entity, position.x + velocity);
-      _ECS2.default.game.increaseSpeed();
+    if (actions.moveLeft !== actions.moveRight) {
+      if (actions.moveLeft) {
+        modX(entity, position.x - velocity);
+        _ECS2.default.game.decreaseSpeed();
+      }
+      if (actions.moveRight) {
+        modX(entity, position.x + velocity);
+        _ECS2.default.game.increaseSpeed();
+      }
     }
 
     if (laser) {

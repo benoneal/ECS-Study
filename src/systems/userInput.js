@@ -7,16 +7,17 @@ import ECS from '../ECS'
 let initialised
 let baseSpeed = 1
 let controls = {
-  '87': 'moveUp',
-  '38': 'moveUp',
-  '83': 'moveDown',
-  '40': 'moveDown',
-  '68': 'moveRight',
-  '39': 'moveRight',
-  '65': 'moveLeft',
-  '37': 'moveLeft',
-  '32': 'fireLaser',
-  '80': 'pause'
+  '87': 'moveUp', // w
+  '38': 'moveUp', // up
+  '83': 'moveDown', // s
+  '40': 'moveDown', // down
+  '68': 'moveRight', // d
+  '39': 'moveRight', // right
+  '65': 'moveLeft', // a
+  '37': 'moveLeft', // left
+  '32': 'fireLaser', // space
+  '80': 'pause', // p
+  '67': 'capture' // c
 }
 
 let actions = {
@@ -25,7 +26,8 @@ let actions = {
   moveLeft: false,
   moveRight: false,
   fireLaser: false,
-  pause: false
+  pause: false,
+  capture: false
 }
 
 const startAction = e => actions[controls[e.keyCode]] = true
@@ -54,26 +56,25 @@ const UserInput = entities => {
       ECS.game.togglePause()
     }
 
-    if (actions.moveUp === actions.moveDown) {
-      actions.moveUp = false
-      actions.moveDown = false
-    } 
-
-    if (actions.moveUp) modY(entity, position.y - velocity)
-    if (actions.moveDown) modY(entity, position.y + velocity)
-
-    if (actions.moveLeft === actions.moveRight) {
-      actions.moveLeft = false
-      actions.moveRight = false
-    } 
-    
-    if (actions.moveLeft) {
-      modX(entity, position.x - velocity)
-      ECS.game.decreaseSpeed()
+    if (actions.capture) {
+      ECS.game.saveGame()
+      actions.capture = false
     }
-    if (actions.moveRight) {
-      modX(entity, position.x + velocity)
-      ECS.game.increaseSpeed()
+
+    if (actions.moveUp !== actions.moveDown) {
+      if (actions.moveUp) modY(entity, position.y - velocity)
+      if (actions.moveDown) modY(entity, position.y + velocity)
+    }
+
+    if (actions.moveLeft !== actions.moveRight) {
+      if (actions.moveLeft) {
+        modX(entity, position.x - velocity)
+        ECS.game.decreaseSpeed()
+      }
+      if (actions.moveRight) {
+        modX(entity, position.x + velocity)
+        ECS.game.increaseSpeed()
+      }
     }
 
     if (laser) {
