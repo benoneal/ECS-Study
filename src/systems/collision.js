@@ -40,7 +40,8 @@ const Collision = entities => {
 
     // handle laser collisions
     if (!playerControlled && laser && laser.components.laser.firing && doesIntersect(laser, entity)) {
-      if (tooSpicy) ECS.game.updateScore(100)
+      if (tooSpicy) ECS.game.updateScore(5)
+      if (delicious) ECS.game.updateScore(2)
       if (!spawn) ECS.removeEntity(entity)
     }
 
@@ -63,7 +64,7 @@ const Collision = entities => {
         soundEffect.effect = 'oww'
         soundEffect.action = 'fire'
         modHealth(player, -tooSpicy.damage)
-        ECS.game.increaseDifficulty()
+        ECS.game.difficulty(1)
         ECS.game.updateScore(-1)
       } 
 

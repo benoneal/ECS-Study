@@ -6,6 +6,7 @@ let appearance = { size: { w: 55, h: 82 }, image: 'daninator', altImage: 'danina
 
 export default (position) => {
   let entity = new ECS.Entity()
+  entity.addComponent(new ECS.components.Player())
   entity.addComponent(new ECS.components.Appearance(appearance))
   entity.addComponent(new ECS.components.Position(position))
   entity.addComponent(new ECS.components.PlayerControlled(true))

@@ -1,6 +1,6 @@
 'use strict'
 
-function Laser(ammo = 120) {
+function Laser(ammo = 60) {
   this.firing = false
   this.ammo = ammo
   this.maxAmmo = ammo

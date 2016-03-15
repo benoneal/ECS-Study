@@ -3,6 +3,7 @@
 import forEach from 'lodash/forEach'
 import ECS from '../ECS'
 import clearCanvas from '../helpers/clearCanvas'
+import husl from 'husl'
 
 let imgCache = {}
 
@@ -60,6 +61,7 @@ const drawAppearance = (appearance, position) => {
 
 const Render = entities => {
   clearCanvas(ECS.context, ECS.$canvas)
+  ECS.$canvas.style.backgroundColor = husl.toHex(212, ECS.game.multiplier * 36, 40)
 
   forEach(entities, entity => {
     let { appearance, secondaryAppearance, position, health, playerControlled, laser } = entity.components

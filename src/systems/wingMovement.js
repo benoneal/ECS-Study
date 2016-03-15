@@ -12,7 +12,7 @@ const WingMovement = entities => {
     return !!delicious || !!tooSpicy || !!spawn
   })
 
-  let velocity = (baseSpeed * (1 + ECS.game.speed / 25)) / 100
+  let velocity = (baseSpeed * (1 + ECS.game.speed() / 25)) / 100
 
   forEach(entities, entity => {
     let { delicious, tooSpicy, spawn, position } = entity.components

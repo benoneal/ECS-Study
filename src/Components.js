@@ -4,6 +4,7 @@ import Appearance from './components/Appearance'
 import SecondaryAppearance from './components/SecondaryAppearance'
 import Health from './components/Health'
 import Position from './components/Position'
+import Player from './components/Player'
 import PlayerControlled from './components/PlayerControlled'
 import Collision from './components/Collision'
 import Delicious from './components/Delicious'
@@ -16,7 +17,8 @@ export default {
   Appearance,
   SecondaryAppearance,
   Health,
-  Position, 
+  Position,
+  Player, 
   PlayerControlled,
   Collision,
   Delicious,

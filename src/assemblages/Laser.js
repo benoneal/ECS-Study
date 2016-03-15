@@ -2,7 +2,7 @@
 
 import ECS from '../ECS'
 
-let appearance = { size: { w: 800, h: 45 }, image: 'laser', imageAlign: 'l' }
+let appearance = { size: { w: 800, h: 65 }, image: 'laser', imageAlign: 'l' }
 let secAppearance = { size: { w: 65, h: 65 }, image: 'laserEyes' }
 
 export default (position) => {

@@ -8,41 +8,38 @@ import random from 'lodash/random'
 import clamp from 'lodash/clamp'
 import ECS from './ECS'
 
-let defaultStartPos = { x: 1.1 }
+let wingPos = { x: 1.1, y: 0.5 }
 
 const range = num => Array.from(Array(num).keys())
 const filteredEntities = req => filter(ECS.entities, e => every(req, r => !!e.components[r]))
 
 function Game() {
-  let { BuffaloWing, DeathWing, Daninator } = ECS.assemblages
+  let { BuffaloWing, DeathWing, LaserPickup, Daninator } = ECS.assemblages
 
   const gameLoop = () => {
+    if (!this._running) return 
     forEach(ECS.systems, system => system(filteredEntities(system.requirements)))
-    if (random(200) <= this.speed) this.spawnWings()
-    if (random(10000) <= this.speed) this.spawnLaserPickup()
-    this.speed += 0.01
-    this.difficulty += 0.01
-    if (this._running) requestAnimationFrame(gameLoop)
+    if (random(300) <= this.speed(0.01)) spawnWings()
+    if (random(50000) <= this.difficulty(0.02)) spawnLaserPickup()
+    requestAnimationFrame(gameLoop)
   }
 
-  const modSpeed = speed => this.speed = clamp(speed, 1, 50)
-  const modDifficulty = difficulty => this.difficulty = clamp(difficulty, 10, 80)
-  const wingFactory = Type => ECS.addEntity(new Type(defaultStartPos))
-
-  this.speed = 1
-  this.increaseSpeed = () => modSpeed(this.speed + 1)
-  this.decreaseSpeed = () => modSpeed(this.speed - 1)
-
-  this.difficulty = 10
-  this.increaseDifficulty = () => modDifficulty(this.difficulty + 2)
-  this.decreaseDifficulty = () => modDifficulty(this.difficulty - 1)
-
-  this.spawnWings = () => wingFactory((random(100) >= this.difficulty) ? BuffaloWing : DeathWing)
-  this.spawnLaserPickup = () => ECS.addEntity(new ECS.assemblages.LaserPickup(defaultStartPos))
-
-  this.updateScore = (delta = 1) => {
-    ECS.score += round(delta * (this.speed + this.difficulty))
+  const spawn = (Type, yRange = 0.2) => {
+    wingPos.y = clamp(wingPos.y + random(-yRange, yRange), 0.1, 0.8)
+    ECS.addEntity(new Type(wingPos))
   }
+
+  const spawnWings = () => (random(1000) >= this.difficulty()) ? spawn(BuffaloWing) : spawn(DeathWing, 0.4)
+  const spawnLaserPickup = () => spawn(LaserPickup, 0.6)
+
+  this._speed = 1
+  this._difficulty = 10
+
+  this.multiplier = 1
+  this.speed = (delta = 0) => (this._speed += delta) * (this.multiplier || 1)
+  this.difficulty = (delta = 0) => (this._difficulty += delta) * (this.multiplier || 1)
+
+  this.updateScore = (delta = 1) => ECS.score += round(delta * this.speed() / 2)
 
   this.startGame = () => {
     this._running = true
@@ -50,7 +47,6 @@ function Game() {
       this.loadGame()
     } else {
       ECS.addEntity(new Daninator({ x: 0.08, y: 0.5 }))
-      this.spawnWings()
     }
     requestAnimationFrame(gameLoop)
   }

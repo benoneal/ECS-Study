@@ -47,13 +47,14 @@ const UserInput = entities => {
   const modY = (entity, pos) => entity.components.position.y = clamp(pos, 0, 1)
   const modX = (entity, pos) => entity.components.position.x = clamp(pos, 0, 0.5)
 
-  let velocity = (baseSpeed * (1 + ECS.game.speed / 50)) / 100
+  let velocity = (baseSpeed * (1 + ECS.game.speed() / 50)) / 100
 
   forEach(entities, entity => {
     let { laser, position, soundEffect } = entity.components
     if (actions.pause) {
       window.addEventListener('keydown', handlePause)
       ECS.game.togglePause()
+      return
     }
 
     if (actions.capture) {
@@ -67,14 +68,8 @@ const UserInput = entities => {
     }
 
     if (actions.moveLeft !== actions.moveRight) {
-      if (actions.moveLeft) {
-        modX(entity, position.x - velocity)
-        ECS.game.decreaseSpeed()
-      }
-      if (actions.moveRight) {
-        modX(entity, position.x + velocity)
-        ECS.game.increaseSpeed()
-      }
+      if (actions.moveLeft) modX(entity, position.x - velocity)
+      if (actions.moveRight) modX(entity, position.x + velocity)
     }
 
     if (laser) {
