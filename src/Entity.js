@@ -23,9 +23,4 @@ Entity.prototype.removeComponent = function(component) {
   return this
 }
 
-Entity.prototype.dehydrate = function() {
-  console.log(JSON.stringify(this, null, 4))
-  return this
-}
-
 export default Entity
