@@ -4114,6 +4114,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var wingPos = { x: 1.1, y: 0.5 };
 
+// const music = new Audio('mp3/music.mp3')
+// music.loop = true
+// music.volume = 1
 var range = function range(num) {
   return Array.from(Array(num).keys());
 };
@@ -4142,6 +4145,7 @@ function Game() {
     });
     if ((0, _random2.default)(300) <= _this.speed(0.01)) spawnWings();
     if ((0, _random2.default)(50000) <= _this.difficulty(0.02)) spawnLaserPickup();
+    // music.playbackRate = this._speed / 20
     requestAnimationFrame(gameLoop);
   };
 
@@ -4165,11 +4169,11 @@ function Game() {
   this.multiplier = 1;
   this.speed = function () {
     var delta = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-    return (_this._speed += delta) * (_this.multiplier || 1);
+    return (_this._speed += delta) * _this.multiplier;
   };
   this.difficulty = function () {
     var delta = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-    return (_this._difficulty += delta) * (_this.multiplier || 1);
+    return (_this._difficulty += delta) * _this.multiplier;
   };
 
   this.updateScore = function () {
@@ -4184,6 +4188,7 @@ function Game() {
     } else {
       _ECS2.default.addEntity(new Daninator({ x: 0.08, y: 0.5 }));
     }
+    // music.play()
     requestAnimationFrame(gameLoop);
   };
 
@@ -4211,6 +4216,7 @@ function Game() {
     _this._running = false;
     document.getElementById('final-score').innerHTML = _ECS2.default.score;
     document.getElementById('game-over').className = '';
+    // music.pause()
     setTimeout(function () {
       return document.getElementById('game-canvas').className = 'game-over';
     }, 100);
@@ -4530,9 +4536,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function Player() {
-  var flag = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-  this.isPlayer = flag;
+  this.isPlayer = true;
 }
 
 Player.prototype.name = 'player';
@@ -4546,9 +4550,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 function PlayerControlled() {
-  var isPlayer = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-  if (isPlayer) this.isPlayer = true;
   this.pc = true;
 }
 
@@ -4572,8 +4573,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function Position() {
   var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  this.x = params.x || (0, _random2.default)(0.05, 0.95);
-  this.y = params.y || (0, _random2.default)(0.05, 0.95);
+  this.x = params.x != null ? params.x : (0, _random2.default)(0.05, 0.95);
+  this.y = params.y != null ? params.y : (0, _random2.default)(0.05, 0.95);
   this.deg = params.deg || 0;
 }
 
@@ -4728,7 +4729,7 @@ var Collision = function Collision(entities) {
 
     entity.components.health.value = (0, _clamp2.default)(value + mod, 0, maxHealth);
   };
-  var player = findByComponent('playerControlled.isPlayer');
+  var player = findByComponent('player');
   var laser = findByComponent('laser');
   var _player$components = player.components;
   var appearance = _player$components.appearance;
@@ -4771,7 +4772,7 @@ var Collision = function Collision(entities) {
 
       if (tooSpicy) {
         // with DeathWings
-        soundEffect.effect = 'oww';
+        soundEffect.effect = 'hot';
         soundEffect.action = 'fire';
         modHealth(player, -tooSpicy.damage);
         _ECS2.default.game.difficulty(1);
@@ -4917,7 +4918,7 @@ var drawAppearance = function drawAppearance(appearance, position) {
 
 var Render = function Render(entities) {
   (0, _clearCanvas2.default)(_ECS2.default.context, _ECS2.default.$canvas);
-  _ECS2.default.$canvas.style.backgroundColor = _husl2.default.toHex(212, _ECS2.default.game.multiplier * 36, 40);
+  _ECS2.default.$canvas.style.backgroundColor = _husl2.default.toHex(212, _ECS2.default.game.multiplier * 25, 40);
 
   (0, _forEach2.default)(entities, function (entity) {
     var _entity$components = entity.components;
@@ -5037,7 +5038,7 @@ var _ECS2 = _interopRequireDefault(_ECS);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ScaleDifficulty = function ScaleDifficulty(entities) {
-  _ECS2.default.game.multiplier = entities[0].components.position.x * 5;
+  _ECS2.default.game.multiplier = entities[0].components.position.x * 5 + 1;
 };
 
 ScaleDifficulty.requirements = ['player', 'position'];
@@ -5267,6 +5268,7 @@ var WingMovement = function WingMovement(entities) {
     if (spawn) entity.components.position.x -= velocity * 1.5;
     if (position.x <= -0.1) {
       if (tooSpicy) _ECS2.default.game.updateScore();
+      if (delicious) _ECS2.default.game.updateScore(-1);
       _ECS2.default.removeEntity(entity);
     }
   });

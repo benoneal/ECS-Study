@@ -31,7 +31,7 @@ const Collision = entities => {
     let { value, maxHealth } = entity.components.health
     entity.components.health.value = clamp(value + mod, 0, maxHealth)
   }
-  let player = findByComponent('playerControlled.isPlayer')
+  let player = findByComponent('player')
   let laser = findByComponent('laser')
   let { appearance, position, soundEffect } = player.components
 
@@ -61,7 +61,7 @@ const Collision = entities => {
       }
 
       if (tooSpicy) { // with DeathWings
-        soundEffect.effect = 'oww'
+        soundEffect.effect = 'hot'
         soundEffect.action = 'fire'
         modHealth(player, -tooSpicy.damage)
         ECS.game.difficulty(1)

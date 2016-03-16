@@ -21,6 +21,7 @@ const WingMovement = entities => {
     if (spawn) entity.components.position.x -= velocity * 1.5
     if (position.x <= -0.1) {
       if (tooSpicy) ECS.game.updateScore()
+      if (delicious) ECS.game.updateScore(-1)
       ECS.removeEntity(entity)
     }
   })

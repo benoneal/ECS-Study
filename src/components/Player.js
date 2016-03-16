@@ -1,7 +1,7 @@
 'use strict'
 
-function Player(flag = true) {
-  this.isPlayer = flag
+function Player() {
+  this.isPlayer = true
 }
 
 Player.prototype.name = 'player'

@@ -10,6 +10,9 @@ import ECS from './ECS'
 
 let wingPos = { x: 1.1, y: 0.5 }
 
+// const music = new Audio('mp3/music.mp3')
+// music.loop = true
+// music.volume = 1
 const range = num => Array.from(Array(num).keys())
 const filteredEntities = req => filter(ECS.entities, e => every(req, r => !!e.components[r]))
 
@@ -21,6 +24,7 @@ function Game() {
     forEach(ECS.systems, system => system(filteredEntities(system.requirements)))
     if (random(300) <= this.speed(0.01)) spawnWings()
     if (random(50000) <= this.difficulty(0.02)) spawnLaserPickup()
+    // music.playbackRate = this._speed / 20
     requestAnimationFrame(gameLoop)
   }
 
@@ -36,8 +40,8 @@ function Game() {
   this._difficulty = 10
 
   this.multiplier = 1
-  this.speed = (delta = 0) => (this._speed += delta) * (this.multiplier || 1)
-  this.difficulty = (delta = 0) => (this._difficulty += delta) * (this.multiplier || 1)
+  this.speed = (delta = 0) => (this._speed += delta) * this.multiplier
+  this.difficulty = (delta = 0) => (this._difficulty += delta) * this.multiplier
 
   this.updateScore = (delta = 1) => ECS.score += round(delta * this.speed() / 2)
 
@@ -48,6 +52,7 @@ function Game() {
     } else {
       ECS.addEntity(new Daninator({ x: 0.08, y: 0.5 }))
     }
+    // music.play()
     requestAnimationFrame(gameLoop)
   }
 
@@ -71,6 +76,7 @@ function Game() {
     this._running = false
     document.getElementById('final-score').innerHTML = ECS.score
     document.getElementById('game-over').className = ''
+    // music.pause()
     setTimeout(() => document.getElementById('game-canvas').className = 'game-over', 100)
   }
 

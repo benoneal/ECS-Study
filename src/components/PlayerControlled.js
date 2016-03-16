@@ -1,7 +1,6 @@
 'use strict'
 
-function PlayerControlled(isPlayer = false) {
-  if (isPlayer) this.isPlayer = true
+function PlayerControlled() {
   this.pc = true
 }
 
